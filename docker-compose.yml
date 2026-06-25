@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  cybermentor:
+    build: .
+    container_name: cybermentor
+    restart: unless-stopped
+    env_file:
+      - .env

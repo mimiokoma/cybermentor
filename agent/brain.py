@@ -1,6 +1,6 @@
 from openai import OpenAI
 from config import OPENAI_API_KEY
-from agent.promts import SYSTEM_PROMPT, MONTH_PLAN_PROMPT, PROGRESS_PROMPT
+from agent.promts import SYSTEM_PROMPT, MONTH_PLAN_PROMPT
 
 client = OpenAI(
     api_key=OPENAI_API_KEY
@@ -88,27 +88,3 @@ def generate_month_plan(user_profile):
     return response.choices[0].message.content
 
 
-def analyze_progress(user, progress):
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        temperature=0.8,
-        messages=[
-            {
-                "role": "system",
-                "content": PROGRESS_PROMPT
-            },
-            {
-                "role": "user",
-                "content": f"""
-Профиль:
-
-{user}
-
-Новый прогресс:
-
-{progress}
-"""
-            }
-        ]
-    )
-    return response.choices[0].message.content

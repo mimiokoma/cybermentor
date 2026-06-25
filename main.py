@@ -22,8 +22,7 @@ from data.goals import GOALS
 
 from agent.brain import (
     ask_ai,
-    generate_month_plan,
-    analyze_progress
+    generate_month_plan
 )
 
 from data.resources import (
@@ -80,7 +79,7 @@ menu = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="🎯 Профориентация")],
         [KeyboardButton(text="🤖 Задать вопрос наставнику")],
-        [KeyboardButton(text="📅 Мой план на месяц")],
+        [KeyboardButton(text="🗺️ Моя карьерная траектория")],
         [KeyboardButton(text="📚 Ресурсы для развития")],
         [KeyboardButton(text="👤 Мой профиль")]
     ],
@@ -122,9 +121,8 @@ education_keyboard = ReplyKeyboardMarkup(
 
 plan_keyboard = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="📖 Показать план")],
-        [KeyboardButton(text="🔄 Изменить цель")],
-
+        [KeyboardButton(text="🗺️ Показать траекторию")],
+        [KeyboardButton(text="🎯 Изменить цель")],
         [KeyboardButton(text="🏠 Главное меню")]
     ],
     resize_keyboard=True
@@ -143,7 +141,7 @@ goal_keyboard = ReplyKeyboardMarkup(
 @dp.message(CommandStart())
 async def start(message: Message):
     await message.answer(
-        "Привет! 🤖 \nЯ Бот, который поможет в определении профессиональной траектории, если ты школьник, абитуриент или студент.\nЯ компетентен в треках: кибербезопасность, информационная безопасность, разработка, аналитика, компьютерная экспертиза и других IT-направлениях!",
+        "Привет! Я CyberMentor 👋\n\nЯ — интеллектуальный карьерный наставник, который помогает школьникам, абитуриентам и студентам построить профессиональную траекторию в сфере кибербезопасности и IT.\n\nВместе мы определим подходящее направление, сформируем карьерную траекторию и подберём ресурсы для развития.",
         reply_markup=menu
     )
 
@@ -451,7 +449,7 @@ async def mentor_chat(
 
 
 
-@dp.message(F.text == "📅 Мой план на месяц")
+@dp.message(F.text == "🗺️ Моя карьерная траектория")
 async def month_plan_start(
         message: Message,
         state: FSMContext
@@ -605,7 +603,7 @@ async def profile(message: Message):
         f"{requests} / 20"
     )
 
-@dp.message(F.text == "📅 Мой план на месяц")
+@dp.message(F.text == "🗺️ Моя карьерная траектория")
 async def month_plan_start(
         message: Message,
         state: FSMContext
@@ -656,7 +654,7 @@ async def plan_actions(
         message.from_user.id
     )
 
-    if message.text == "📖 Показать план":
+    if message.text == "🗺️ Показать траекторию":
 
         if "month_plan" not in user:
 

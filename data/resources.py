@@ -10,14 +10,19 @@ BLUE_RESOURCES = {
     "practice": [
         "Stepik: курс Специалист по противодействию кибератакам [CyberED]",
         "TryHackMe",
-        "OverTheWire"
+        "OverTheWire",
+        "Шпаргалка по типичным уязвимостям (HackTricks)",
+        "Awesome Cyber Security University [EN] - Github",
+        "Курсы и тренажёры Let's Defend"
     ],
 
     "telegram": [
         "ATT&CK® COMMUNITY RUSSIA\nканал энтузиастов из РФ, шаг за шагом занимающихся переводом техник матрицы MITRE ATT&CK",
         "SecurityBook\nканал с отличными книгами по кибербезопасности.",
         "SecurityLab\nканал информационного портала по безопасности SecurityLab.ru с ежедневными обновлениями. ",
-        "SOС Технологии\nканал для всех SOC-строителей."
+        "SOС Технологии\nканал для всех SOC-строителей.",
+        "SPbCTF\nразборы заданий CTF от энтузиастов из Петербурга.",
+        "MITRE ATT&CK на русском: https://mitre.ptsecurity.com/ru-RU"
     ],
 
     "skills": [
@@ -43,6 +48,7 @@ RED_RESOURCES = {
         "TryHackMe",
         "Hack The Box",
         "OverTheWire",
+        "Шпаргалка по типичным уязвимостям (HackTricks)",
         "Stepik: курс Профессия - Белый Хакер [CyberED]"
     ],
 
@@ -50,7 +56,9 @@ RED_RESOURCES = {
         "SecurityBook\nканал с отличными книгами по кибербезопасности.",
         "Пост Лукацкого\nАлексей Лукацкий, «легенда отечественного ИБ в шляпе», освещает разные темы в сфере ИБ и таким образом популяризирует ее. ",
         "SecurityLab.ru\nИнформация там бывает совершенно разной, но если хочется быть в курсе повестки, то советую туда иногда заглядывать.",
-        "Social Engineering\nДелает уникальные знания по социальной инженерии доступными. "
+        "Social Engineering\nДелает уникальные знания по социальной инженерии доступными.",
+        "SPbCTF\nразборы заданий CTF от энтузиастов из Петербурга.",
+        "MITRE ATT&CK на русском: https://mitre.ptsecurity.com/ru-RU"
     ],
 
     "skills": [

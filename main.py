@@ -237,7 +237,7 @@ async def choose_level(
     await message.answer(
         f"Вопрос 1/{len(QUESTIONS)}\n\n"
         f"{QUESTIONS[0]['text']}\n\n"
-        f"Оцените от 1 до 5",
+        f"Оцените, насколько каждое утверждение соответствует вам, где:\n\n1 — совсем не согласен(на);\n5 — полностью согласен(на)",
         reply_markup=rating_keyboard
     )
 
@@ -527,9 +527,9 @@ async def resources(
     for platform in resources["practice"]:
         text += f"• {platform}\n"
 
-    text += "\n🎥 Видео:\n"
+    text += "\n📂 Каналы:\n"
 
-    for channel in resources["youtube"]:
+    for channel in resources["telegram"]:
         text += f"• {channel}\n"
 
     await message.answer(text)

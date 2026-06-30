@@ -39,7 +39,11 @@ PROFESSIONS = {
         "Специалист по цифровой криминалистике": [
             "investigation",
             "security"
-        ]
+        ],
+        "Судебный компьютерно-технический эксперт": [
+                    "investigation",
+                    "security"
+                ]
     },
 
     "Red Team": {

@@ -355,10 +355,10 @@ async def process_question(
         for i, (profession, score) in enumerate(top3):
             result_text += f"{medals[i]} {profession}\n"
 
-        result_text += "\n\n🎓 Подходящие направления подготовки:\n\n"
-
-        for specialty in specialties:
-            result_text += f"• {specialty}\n"
+        # result_text += "\n\n🎓 Подходящие направления подготовки:\n\n"
+        #
+        # for specialty in specialties:
+        #     result_text += f"• {specialty}\n"
 
         education_level = data.get(
             "education_level",

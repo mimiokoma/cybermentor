@@ -761,39 +761,7 @@ async def profile(message: Message):
         f"{requests} / 20"
     )
 
-@dp.message(F.text == "🗺️ Моя карьерная траектория")
-async def month_plan_start(
-        message: Message,
-        state: FSMContext
-):
 
-    user = get_user(
-        message.from_user.id
-    )
-
-    if not user:
-
-        await message.answer(
-            "Сначала пройдите профориентацию."
-        )
-        return
-
-    if "goal" not in user:
-
-        await state.set_state(
-            CareerTest.month_plan_goal
-        )
-
-        await message.answer(
-            "Для какой цели сформировать план?",
-            reply_markup=goal_keyboard
-        )
-
-        return
-
-    await state.set_state(
-        CareerTest.month_plan_action
-    )
 
     await message.answer(
         f"🎯 Текущая цель:\n\n"

@@ -96,7 +96,7 @@ dp = Dispatcher(storage=storage)
 
 menu = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="🏆 Мероприятия (NEW)")],
+        [KeyboardButton(text="🏆 Мероприятия")],
         [KeyboardButton(text="🎯 Профориентация")],
         [KeyboardButton(text="🤖 Задать вопрос наставнику")],
         [KeyboardButton(text="🗺️ Моя карьерная траектория")],
@@ -166,7 +166,6 @@ async def start(message: Message):
         keyboard = ReplyKeyboardMarkup(
             keyboard=[
                 [KeyboardButton(text="🎯 Профориентация")],
-                [KeyboardButton(text="📚 Направления подготовки")],
                 [KeyboardButton(text="🗺️ Моя карьерная траектория")],
                 [KeyboardButton(text="🏆 Мероприятия")],
                 [KeyboardButton(text="👤 Мой профиль")],

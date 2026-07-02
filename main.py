@@ -909,32 +909,32 @@ async def ctf_menu(message: Message):
         )
 
         return
-
-    await message.answer(
-        f"""
-🏆 {CTF_INFO['title']}
-
-📅 Дата:
-{CTF_INFO['date']}
-
-🕒 Время:
-{CTF_INFO['time']}
-
-🚀 Важно!:
-{CTF_INFO['duration']}
-
-Для участия нажмите:
-
-📝 Зарегистрироваться
-""",
-        reply_markup=ReplyKeyboardMarkup(
-            keyboard=[
-                [KeyboardButton(text="📝 Зарегистрироваться")],
-                [KeyboardButton(text="🏠 Главное меню")]
-            ],
-            resize_keyboard=True
+    else:
+        await message.answer(
+            f"""
+    🏆 {CTF_INFO['title']}
+    
+    📅 Дата:
+    {CTF_INFO['date']}
+    
+    🕒 Время:
+    {CTF_INFO['time']}
+    
+    🚀 Важно!:
+    {CTF_INFO['duration']}
+    
+    Для участия нажмите:
+    
+    📝 Зарегистрироваться
+    """,
+            reply_markup=ReplyKeyboardMarkup(
+                keyboard=[
+                    [KeyboardButton(text="📝 Зарегистрироваться")],
+                    [KeyboardButton(text="🏠 Главное меню")]
+                ],
+                resize_keyboard=True
+            )
         )
-    )
 
 
 @dp.message(F.text == "📝 Зарегистрироваться")

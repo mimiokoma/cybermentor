@@ -22,10 +22,7 @@ from states.ctf import (
     AdminBroadcast
 )
 from data.ctf import CTF_INFO
-from utils.ctf_storage import (
-    save_ctf_registration,
-    get_ctf_users
-)
+
 
 from config import BOT_TOKEN
 from states.career_test import CareerTest

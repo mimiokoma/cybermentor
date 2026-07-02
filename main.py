@@ -885,12 +885,10 @@ async def ctf_menu(message: Message):
     🕒 Время:
     {CTF_INFO['time']}
     
-    🚀 Важно!:
+    🚀 Важно!
     {CTF_INFO['duration']}
     
-    Для участия нажмите:
-    
-    📝 Зарегистрироваться
+    Для участия нажмите кнопку 📝 Зарегистрироваться
     """,
             reply_markup=ReplyKeyboardMarkup(
                 keyboard=[

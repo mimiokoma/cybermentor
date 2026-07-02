@@ -8,6 +8,16 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from states.ctf import (
+    CTFRegistration,
+    AdminBroadcast
+)
+from data.ctf import CTF_INFO
+from utils.ctf_storage import (
+    save_ctf_registration,
+    get_ctf_users
+)
+
 from config import BOT_TOKEN
 from states.career_test import CareerTest
 from data.questions import QUESTIONS
@@ -77,6 +87,7 @@ dp = Dispatcher(storage=storage)
 
 menu = ReplyKeyboardMarkup(
     keyboard=[
+        [KeyboardButton(text="🏆 Мероприятия (NEW)")],
         [KeyboardButton(text="🎯 Профориентация")],
         [KeyboardButton(text="🤖 Задать вопрос наставнику")],
         [KeyboardButton(text="🗺️ Моя карьерная траектория")],
@@ -85,6 +96,7 @@ menu = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
+
 
 back_keyboard = ReplyKeyboardMarkup(
     keyboard=[
@@ -140,9 +152,27 @@ goal_keyboard = ReplyKeyboardMarkup(
 
 @dp.message(CommandStart())
 async def start(message: Message):
+    if message.from_user.id == ADMIN_ID:
+
+        keyboard = ReplyKeyboardMarkup(
+            keyboard=[
+                [KeyboardButton(text="🎯 Профориентация")],
+                [KeyboardButton(text="📚 Направления подготовки")],
+                [KeyboardButton(text="🗺️ Моя карьерная траектория")],
+                [KeyboardButton(text="🏆 Мероприятия")],
+                [KeyboardButton(text="👤 Мой профиль")],
+                [KeyboardButton(text="⚙️ Панель администратора")]
+            ],
+            resize_keyboard=True
+        )
+
+    else:
+
+        keyboard = menu
+
     await message.answer(
         "Привет! Я CyberMentor 👋\n\nЯ — интеллектуальный карьерный наставник, который помогает школьникам, абитуриентам и студентам построить профессиональную траекторию в сфере кибербезопасности и IT.\n\nВместе мы определим подходящее направление, сформируем карьерную траекторию и подберём ресурсы для развития.",
-        reply_markup=menu
+        reply_markup=keyboard
     )
 
 @dp.message(F.text == "🏠 Главное меню")
@@ -156,6 +186,126 @@ async def back_to_menu(
     await message.answer(
         "Главное меню",
         reply_markup=menu
+    )
+
+@dp.message(F.text == "📊 Статистика")
+async def ctf_stats(message: Message):
+
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    users = get_ctf_users()
+
+    await message.answer(
+        f"📊 Статистика\n\n"
+        f"👥 Зарегистрировано участников:\n\n"
+        f"{len(users)}"
+    )
+
+@dp.message(F.text == "📢 Рассылка")
+async def start_broadcast(
+        message: Message,
+        state: FSMContext
+):
+
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    await state.set_state(
+        AdminBroadcast.message
+    )
+
+    await message.answer(
+        "Введите текст сообщения для всех участников:"
+    )
+
+@dp.message(AdminBroadcast.message)
+async def send_broadcast(
+        message: Message,
+        state: FSMContext
+):
+
+    users = get_ctf_users()
+
+    success = 0
+
+    for user in users.values():
+
+        try:
+
+            await bot.send_message(
+                user["telegram_id"],
+                f"📢 Сообщение от организаторов\n\n{message.text}"
+            )
+
+            success += 1
+
+        except:
+
+            pass
+
+    await state.clear()
+
+    await message.answer(
+        f"✅ Рассылка завершена.\n\n"
+        f"Сообщение получили {success} участников.",
+        reply_markup=admin_menu
+    )
+
+@dp.message(F.text == "🔗 Отправить ссылку")
+async def start_send_link(
+        message: Message,
+        state: FSMContext
+):
+
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    await state.set_state(
+        AdminBroadcast.link
+    )
+
+    await message.answer(
+        "Отправьте ссылку на платформу CTF:"
+    )
+
+@dp.message(AdminBroadcast.link)
+async def send_ctf_link(
+        message: Message,
+        state: FSMContext
+):
+
+    users = get_ctf_users()
+
+    success = 0
+    failed = 0
+
+    for user in users.values():
+
+        try:
+
+            await bot.send_message(
+                chat_id=user["telegram_id"],
+                text=(
+                    "🏆 Онлайн CTF начинается!\n\n"
+                    "Переходите на платформу по ссылке:\n\n"
+                    f"{message.text}\n\n"
+                    "Желаем удачи! 🚀"
+                )
+            )
+
+            success += 1
+
+        except Exception:
+            failed += 1
+
+    await state.clear()
+
+    await message.answer(
+        "✅ Ссылка успешно отправлена!\n\n"
+        f"📨 Отправлено: {success}\n"
+        f"❌ Не доставлено: {failed}",
+        reply_markup=admin_menu
     )
 
 @dp.message(F.text == "🎯 Профориентация")
@@ -738,6 +888,188 @@ async def unknown_message(message: Message):
     await message.answer(
         "Выберите пункт меню.",
         reply_markup=menu
+    )
+
+@dp.message(F.text == "🏆 Мероприятия")
+async def ctf_menu(message: Message):
+
+    users = get_ctf_users()
+
+    if str(message.from_user.id) in users:
+
+        await message.answer(
+            "🏆 Онлайн CTF\n\n"
+            "✅ Вы уже зарегистрированы.\n\n"
+            "Перед началом соревнования мы отправим:\n"
+            "• напоминание;\n"
+            "• ссылку на платформу;\n"
+            "• организационную информацию."
+        )
+
+        return
+
+    await message.answer(
+        f"""
+🏆 {CTF_INFO['title']}
+
+📅 Дата:
+{CTF_INFO['date']}
+
+🕒 Время:
+{CTF_INFO['time']}
+
+🚀 Важно!:
+{CTF_INFO['duration']}
+
+Для участия нажмите:
+
+📝 Зарегистрироваться
+""",
+        reply_markup=ReplyKeyboardMarkup(
+            keyboard=[
+                [KeyboardButton(text="📝 Зарегистрироваться")],
+                [KeyboardButton(text="🏠 Главное меню")]
+            ],
+            resize_keyboard=True
+        )
+    )
+
+from utils.ctf_storage import (
+    save_ctf_registration,
+    get_ctf_users,
+    is_ctf_registered
+)
+
+@dp.message(F.text == "📝 Зарегистрироваться")
+async def start_ctf_registration(
+        message: Message,
+        state: FSMContext
+):
+
+    if is_ctf_registered(message.from_user.id):
+        await message.answer(
+            "✅ Вы уже зарегистрированы на CTF!"
+        )
+
+        return
+
+    await state.set_state(
+        CTFRegistration.full_name
+    )
+
+    await message.answer(
+        "Введите ваши ФИО:"
+    )
+
+@dp.message(CTFRegistration.full_name)
+async def ctf_name(
+        message: Message,
+        state: FSMContext
+):
+
+    await state.update_data(
+        full_name=message.text
+    )
+
+    await state.set_state(
+        CTFRegistration.organization
+    )
+
+    await message.answer(
+        "Введите название образовательной организации:"
+    )
+
+@dp.message(CTFRegistration.organization)
+async def ctf_org(
+        message: Message,
+        state: FSMContext
+):
+
+    await state.update_data(
+        organization=message.text
+    )
+
+    await state.set_state(
+        CTFRegistration.course
+    )
+
+    await message.answer(
+        "Укажите курс или класс:"
+    )
+
+@dp.message(CTFRegistration.course)
+async def ctf_course(
+        message: Message,
+        state: FSMContext
+):
+
+    await state.update_data(
+        course=message.text
+    )
+
+    await state.set_state(
+        CTFRegistration.email
+    )
+
+    await message.answer(
+        "Введите адрес электронной почты:"
+    )
+
+@dp.message(CTFRegistration.email)
+async def ctf_email(
+        message: Message,
+        state: FSMContext
+):
+
+    data = await state.get_data()
+
+    registration = {
+        "telegram_id": message.from_user.id,
+        "full_name": data["full_name"],
+        "organization": data["organization"],
+        "course": data["course"],
+        "email": message.text,
+        "registered": True
+    }
+
+    save_ctf_registration(
+        message.from_user.id,
+        registration
+    )
+
+    await state.clear()
+
+    await message.answer(
+        "🎉 Вы успешно зарегистрированы на онлайн CTF!\n\n"
+        "Спасибо за регистрацию.\n\n"
+        "Перед началом соревнования вы получите:\n"
+        "⏰ Напоминание о старте\n"
+        "🔗 Ссылку на платформу\n"
+        "📢 Важные организационные сообщения\n\n"
+        "До встречи на соревновании! 🚀",
+        reply_markup=menu
+    )
+
+admin_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="📢 Рассылка")],
+        [KeyboardButton(text="🔗 Отправить ссылку")],
+        [KeyboardButton(text="📊 Статистика")],
+        [KeyboardButton(text="🏠 Главное меню")]
+    ],
+    resize_keyboard=True
+)
+
+from config import ADMIN_ID
+@dp.message(F.text == "⚙️ Панель администратора")
+async def admin_panel(message: Message):
+
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    await message.answer(
+        "⚙️ Панель администратора",
+        reply_markup=admin_menu
     )
 
 

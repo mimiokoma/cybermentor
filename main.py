@@ -4,6 +4,15 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     KeyboardButton
 )
+
+from config import ADMIN_ID
+
+from utils.ctf_storage import (
+    save_ctf_registration,
+    get_ctf_users,
+    is_ctf_registered
+)
+
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -883,12 +892,6 @@ async def process_goal(
         reply_markup=menu
     )
 
-@dp.message()
-async def unknown_message(message: Message):
-    await message.answer(
-        "Выберите пункт меню.",
-        reply_markup=menu
-    )
 
 @dp.message(F.text == "🏆 Мероприятия")
 async def ctf_menu(message: Message):
@@ -934,11 +937,6 @@ async def ctf_menu(message: Message):
         )
     )
 
-from utils.ctf_storage import (
-    save_ctf_registration,
-    get_ctf_users,
-    is_ctf_registered
-)
 
 @dp.message(F.text == "📝 Зарегистрироваться")
 async def start_ctf_registration(
@@ -1060,7 +1058,6 @@ admin_menu = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-from config import ADMIN_ID
 @dp.message(F.text == "⚙️ Панель администратора")
 async def admin_panel(message: Message):
 
@@ -1072,6 +1069,12 @@ async def admin_panel(message: Message):
         reply_markup=admin_menu
     )
 
+@dp.message()
+async def unknown_message(message: Message):
+    await message.answer(
+        "Выберите пункт меню.",
+        reply_markup=menu
+    )
 
 # =========================
 # Запуск бота
